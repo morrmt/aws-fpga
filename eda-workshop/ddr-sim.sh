@@ -32,7 +32,6 @@ while true; do
     esac
 done
 
-#SCRATCH_FS=efs
 SCRATCH_DIR=/${SCRATCH_FS}/scratch
 FPGA_REPO=aws-fpga-sa-demo
 
