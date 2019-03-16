@@ -20,10 +20,10 @@ $(info VIVADO_TOOL_VERSION = $(VIVADO_TOOL_VERSION))
 endif
 
 ifndef SCRATCH_DIR
- $(info Scratch directory not set, using /tmp.)
+$(info Scratch directory not set, using /tmp.)
  export SCRATCH_DIR = /tmp
 else
- $(info Using $(SCRATCH_DIR) as scratch path.)
+$(info Using $(SCRATCH_DIR) as scratch path.)
 endif
 
 export TEST ?= test_null
