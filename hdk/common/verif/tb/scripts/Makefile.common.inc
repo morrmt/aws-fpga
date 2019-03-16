@@ -114,4 +114,4 @@ $(HDK_COMMON_DIR)/verif/models/sh_bfm/cl_ports_sh_bfm.vh: $(HDK_SHELL_DESIGN_DIR
 	rm -f $(HDK_COMMON_DIR)/verif/models/sh_bfm/cl_ports_t.vh;
 
 make_sim_dir: $(HDK_COMMON_DIR)/verif/models/sh_bfm/cl_ports_sh_bfm.vh
-	mkdir -p $(SIM_ROOT)
+	mkdir -p $(SIM_ROOT)/verif/models/sh_bfm

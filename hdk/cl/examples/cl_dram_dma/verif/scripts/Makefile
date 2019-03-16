@@ -23,6 +23,7 @@ export TEST ?= test_null
 export C_TEST ?= test_null
 
 export CL_ROOT = $(PWD)/../..
+#export SCRATCH_DIR = /fsx
 export SDK_DIR = $(AWS_FPGA_REPO_DIR)/sdk
 
 export C_COMMON_DIR        = $(HDK_COMMON_DIR)/software
@@ -33,13 +34,26 @@ export C_SRC_DIR  = $(CL_ROOT)/software/runtime
 
 export TEST_NAME =  $(CL_ROOT)/verif/tests/$(TEST).sv
 
+RANDOM := $(shell /bin/bash -c "/usr/bin/mktemp -u sim.XXXXX")
+
+
 ifeq ($(C_TEST),test_null)
   export C_TEST_NAME = $(HDK_COMMON_DIR)/software/src/$(C_TEST).c
 else
   export C_TEST_NAME = $(C_SRC_DIR)/$(C_TEST).c
 endif
 
-export SIM_ROOT = $(CL_ROOT)/verif/sim/$(SIMULATOR)
+# Randomize SIM_ROOT path so that multiple jobs can run simultaneously
+# If job is coming from a scheduler, use job IDs in directory name
+ifdef JOB_ID
+   export SIM_ROOT = $(SCRATCH_DIR)/verif/sim/$(SIMULATOR)/job-$(JOB_ID)-$(SGE_TASK_ID).$(RANDOM)
+else
+ifdef LSB_JOBID
+   export SIM_ROOT = $(SCRATCH_DIR)/verif/sim/$(SIMULATOR)/job-$(LSB_JOBID)-$(LSB_JOBINDEX).$(RANDOM)
+else
+   export SIM_ROOT = $(SCRATCH_DIR)/verif/sim/$(SIMULATOR)/$(RANDOM)
+endif
+endif
 
 ifeq ($(C_TEST),test_null)
   export SIM_DIR = $(SIM_ROOT)/$(TEST)
