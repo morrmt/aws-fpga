@@ -21,7 +21,7 @@ endif
 
 ifndef SCRATCH_DIR
 $(info Scratch directory not set, using /tmp.)
- export SCRATCH_DIR = /tmp
+  export SCRATCH_DIR = /tmp
 else
 $(info Using $(SCRATCH_DIR) as scratch path.)
 endif
