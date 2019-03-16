@@ -19,11 +19,17 @@ else
 $(info VIVADO_TOOL_VERSION = $(VIVADO_TOOL_VERSION))
 endif
 
+ifndef SCRATCH_DIR
+ $(info Scratch directory not set, using /tmp.)
+ export SCRATCH_DIR = /tmp
+else
+ $(info Using $(SCRATCH_DIR) as scratch path.)
+endif
+
 export TEST ?= test_null
 export C_TEST ?= test_null
 
 export CL_ROOT = $(PWD)/../..
-#export SCRATCH_DIR = /fsx
 export SDK_DIR = $(AWS_FPGA_REPO_DIR)/sdk
 
 export C_COMMON_DIR        = $(HDK_COMMON_DIR)/software
