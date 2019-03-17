@@ -18,12 +18,6 @@ full_script=$(readlink -f $0)
 script_name=$(basename $full_script)
 script_dir=$(dirname $full_script)
 current_dir=$(pwd)
-SCRATCH_DIR=/${SCRATCH_FS}/scratch
-
-echo "full_script: $full_script"
-echo "script_name: $script_name"
-echo "script_dir: $script_dir"
-echo "current_dir: $current_dir"
 
 function usage {
   echo -e "USAGE: $script_name [-d|-debug] [-h|-help]"
@@ -43,60 +37,33 @@ function help {
     2. The simulator loads and executes (using the *xsim* command) the snapshot to
        simulate the model.  This phases is less IO-intensive and more CPU-bound.
 EOF
-  usage
 }
 
 # Process command line args
-args=( "$@" )
-for (( i = 0; i < ${#args[@]}; i++ )); do
-  arg=${args[$i]}
-  case $arg in
-    -d|-debug)
-      debug=1
-    ;;
-    -h|-help)
+PARAMS=""
+while (( "$#" )); do
+  case "$1" in
+    -s|--scratch-dir)
+      SCRATCH_DIR=$2
+      shift 2
+      ;;
+    --) # end argument parsing
+      shift
+      break
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
       help
-      return 0
-    ;;
-    *)
-      err_msg "Invalid option: $arg\n"
-      usage
-      return 1
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
   esac
 done
-
-## Call getopt to validate the provided input.
-#options=$(/usr/bin/getopt -o f: --long "test,filesystem:" -- "$@")
-#
-## Bad args, something went wrong with getopt
-#if [ $? -ne 0 ];
-#then
-#  echo "1: Incorrect options provided"
-#  exit 1
-#fi
-#
-## A little magic, necessary when using getopt
-#eval set -- "$options"
-#
-#while true; do
-#    case "$1" in
-#
-#       -f|--filesystem)
-#          shift # argument to option is $2. shift to $1
-#          SCRATCH_FS=$1
-#          [[ ! $SCRATCH_FS =~ efs|fsx|ec2nfs ]] && {
-#           echo "filesystem must be 'efs', 'fsx', or 'ec2nfs'."
-#           exit 1
-#          }
-#          shift
-#          ;;
-#       --)
-#          shift
-#          break
-#          ;;
-#    esac
-#done
-
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
 
 
 # Source the HDK environment
@@ -107,6 +74,7 @@ echo "Sourcing HDK env"
 . /etc/profile.d/which2.sh
 . ${script_dir}/../hdk_setup.sh
 
+echo "SCRATCH_DIR = $scratch_dir"
 # Move to the cl_dram_dma design and run the test_ddr test simulation
 echo "Changing into scripts dir..."
 cd $HDK_DIR/cl/examples/cl_dram_dma/verif/scripts
