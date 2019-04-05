@@ -14,7 +14,7 @@
 # implied. See the License for the specific language governing permissions and
 # limitations under the License.
 
-LC_ALL="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 full_script=$(readlink -f $0)
 script_name=$(basename $full_script)
 script_dir=$(dirname $full_script)
